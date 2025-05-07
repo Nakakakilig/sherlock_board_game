@@ -97,26 +97,26 @@ def room_status_old(room: Annotated[Room, Depends()]) -> RoomStates:
     return room.get_room_state()
 
 
-@router.get("/status", response_class=HTMLResponse)
-def room_status(
-    request: Request,
-    room: Annotated[Room, Depends()],
-):
-    state = room.get_room_state()
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "deck": len(state.deck),
-            "trash": len(state.trash),
-            "cards_on_table": [card.image_url for card in state.cards_on_table],
-            "players": list(state.players.values()),
-            # **state.model_dump(),
-        },
-    )
+# @router.get("/status", response_class=HTMLResponse)
+# def room_status(
+#     request: Request,
+#     room: Annotated[Room, Depends()],
+# ):
+#     state = room.get_room_state()
+#     return templates.TemplateResponse(
+#         "index.html",
+#         {
+#             "request": request,
+#             "deck": len(state.deck),
+#             "trash": len(state.trash),
+#             "cards_on_table": [card.image_url for card in state.cards_on_table],
+#             "players": list(state.players.values()),
+#             # **state.model_dump(),
+#         },
+#     )
 
 
-@router.get("/status/{player_name}", response_class=HTMLResponse)
+@router.get("/html/{player_name}", response_class=HTMLResponse)
 def room_status_for_player(
     player_name: str,
     request: Request,
@@ -142,7 +142,7 @@ def room_status_for_player(
     )
 
 
-@router.get("/status2/{player_name}")
+@router.get("/json/{player_name}")
 def room_status_for_player_2(  # type: ignore
     player_name: str,
     request: Request,
@@ -167,5 +167,5 @@ def join_game_2(
     player_name: str = Form(...),  # получає інфу з html
 ):
     room.add_player(player_name=player_name)
-    redirect_url = f"/api/room/status/{player_name}"
+    redirect_url = f"/api/room/html/{player_name}"
     return RedirectResponse(url=redirect_url, status_code=302)

@@ -1,0 +1,73 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.game-board {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+}
+
+.cards-on-table {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cards-on-table img {
+    width: 50px;
+    height: 75px;
+    margin: 5px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 10;
+}
+
+
+.players-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.player {
+    position: absolute;
+    text-align: center;
+    width: 60px;
+    height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.player img {
+    width: 50px;
+    height: 75px;
+}
+
+/* Розташовуємо гравців по колу навколо карт */
+{% for i in range(players|length) %}
+.player-{{ i }} {
+    transform: rotate({{ (360 / players|length) * i }}deg) translate(220px) rotate(-{{ (360 / players|length) * i }}deg);
+}
+{% endfor %}
