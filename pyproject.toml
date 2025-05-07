@@ -1,0 +1,47 @@
+[project]
+name = "sherlock-board-game"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastapi>=0.115.12",
+    "jinja2>=3.1.6",
+    "pydantic-settings>=2.9.1",
+    "python-multipart>=0.0.20",
+    "uuid>=1.30",
+    "uvicorn>=0.34.2",
+]
+
+
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "B", "W", "UP", "RUF", "FAST", "ASYNC", "SIM", "RET",  "C4", "A", "PL", "TRY"]
+ignore = [
+    "TRY301",
+    "RUF010",
+    "RUF100",
+    "RET504",
+    "PLR1711",
+    "TRY002",
+    "TRY003",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "config",
+]
+known-third-party = [
+    "fastapi",
+    "uvicorn",
+    "logging",
+    "uuid",
+]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+combine-as-imports = true
+split-on-trailing-comma = true

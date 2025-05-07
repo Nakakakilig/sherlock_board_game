@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{current_player_name}} game status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .game-board {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 100px;
+        }
+
+        .cards-on-table {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cards-on-table img {
+            width: 50px;
+            height: 75px;
+            margin: 5px;
+            cursor: pointer;
+            transition: transform 0.3s ease;  
+            z-index: 10;
+        }
+
+
+        .players-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player {
+            position: absolute;
+            text-align: center;
+            width: 60px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .player img {
+            width: 50px;
+            height: 75px;
+        }
+
+        /* Розташовуємо гравців по колу навколо карт */
+        {% for i in range(players|length) %}
+        .player-{{ i }} {
+            transform: rotate({{ (360 / players|length) * i }}deg) translate(220px) rotate(-{{ (360 / players|length) * i }}deg);
+        }
+        {% endfor %}
+    </style>
+</head>
+<body>
+
+    <!-- Deck і Trash розташовуються над колом -->
+    <div class="deck-trash">
+        <div id="deck-count"> Deck: {{ deck }}</div>
+        <div id="trash-count">Trash: {{ trash }}</div>
+    </div>
+
+
+    <div class="game-board">
+        <!-- Картки на столі -->
+        <div class="cards-on-table" id="cards-on-table">
+            {% for card in cards_on_table %}
+                <img src="/{{ card }}" alt="card" >
+            {% endfor %}
+        </div>
+
+        <!-- Гравці розташовуються поза колом -->
+        <div class="players-container" id="players-container">
+            {% for player in players %}
+                <div class="player player-{{ loop.index0 }}">
+                    <span>{{ player.name }}</span>
+                    <div>
+                        {% for card in player.cards %}
+                            {% if player.name == current_player_name %}
+                                <img src="/{{card.image_url}}" alt="card">
+                            {% else %}
+                                <img src="/assets/card_template.png" alt="card">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const currentPlayer = "{{ current_player_name }}";
+
+        async function fetchRoomStatus() {
+            try {
+                const response = await fetch(`/api/room/status2/${currentPlayer}`);
+                const data = await response.json();
+
+                updateDeckAndTrash(data.deck, data.trash);
+                updateCardsOnTable(data.cards_on_table);
+                updatePlayers(data.players);
+            } catch (err) {
+                console.error("Помилка при отриманні статусу кімнати:", err);
+            }
+        }
+
+        function updateDeckAndTrash(deck, trash) {
+            document.getElementById("deck-count").textContent = `Deck: ${deck ?? 0}`;
+            document.getElementById("trash-count").textContent = `Trash: ${trash ?? 0}`;
+        }
+
+        function updateCardsOnTable(cards) {
+            const container = document.getElementById("cards-on-table");
+            container.innerHTML = "";  // Очистити попередні карти
+
+            cards.forEach(card => {
+                const img = document.createElement("img");
+                img.src = `/${card}`;
+                img.alt = "card";
+                container.appendChild(img);
+            });
+        }
+
+        function updatePlayers(players) {
+            const container = document.getElementById("players-container");
+            
+            // Оновлення кожного гравця
+            players.forEach((player, index) => {
+                let playerDiv = container.querySelector(`.player-${index}`);
+                if (!playerDiv) {
+                    playerDiv = document.createElement("div");
+                    playerDiv.className = `player player-${index}`;
+                    const nameSpan = document.createElement("span");
+                    nameSpan.textContent = player.name;
+                    playerDiv.appendChild(nameSpan);
+                    container.appendChild(playerDiv);
+                }
+
+                const cardsDiv = playerDiv.querySelector("div") || document.createElement("div");
+                cardsDiv.innerHTML = ''; // Очистити попередні карти
+
+                player.cards.forEach(card => {
+                    const img = document.createElement("img");
+                    if (player.name === currentPlayer) {
+                        img.src = `/${card.image_url}`;
+                    } else {
+                        img.src = "/assets/card_template.png";  // Зображення шаблону для інших гравців
+                    }
+                    cardsDiv.appendChild(img);
+                });
+
+                playerDiv.appendChild(cardsDiv);
+            });
+
+            // Генерація CSS для позицій гравців по колу
+            generatePlayerStyles(players.length);
+        }
+
+        function generatePlayerStyles(count) {
+            const styleTag = document.getElementById("dynamic-player-styles") || document.createElement("style");
+            styleTag.id = "dynamic-player-styles";
+            let styles = "";
+            for (let i = 0; i < count; i++) {
+                const angle = (360 / count) * i;
+                styles += `.player-${i} { transform: rotate(${angle}deg) translate(220px) rotate(-${angle}deg); }\n`;
+            }
+            styleTag.textContent = styles;
+            document.head.appendChild(styleTag);
+        }
+
+        // Перше оновлення + кожну секунду
+        fetchRoomStatus();
+        setInterval(fetchRoomStatus, 1000);
+    </script>   
+</body>
+</html>
