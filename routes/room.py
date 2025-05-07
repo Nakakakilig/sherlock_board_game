@@ -5,6 +5,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 
+from exceptions import PlayerNotFoundError
 from game.models import Games, RoomStates
 from game.room import Room
 
@@ -28,6 +29,14 @@ def clean_deck(
     room: Annotated[Room, Depends()],
 ):
     room.clean_deck()
+    return
+
+
+@router.post("/clean_room")
+def clean_room(
+    room: Annotated[Room, Depends()],
+):
+    room.clean_room()
     return
 
 
@@ -113,8 +122,8 @@ def room_status_for_player(
     request: Request,
     room: Annotated[Room, Depends()],
 ):
-    if not room._find_player_by_name(player_name):
-        raise Exception(f"No such player: {player_name}")
+    if not room._find_player_by_name(player_name):  # type: ignore
+        raise PlayerNotFoundError(player_name)
 
     state = room.get_room_state()
     return templates.TemplateResponse(
@@ -140,7 +149,7 @@ def room_status_for_player_2(  # type: ignore
     room: Annotated[Room, Depends()],
 ):
     if not room._find_player_by_name(player_name):  # type: ignore
-        raise Exception(f"No such player: {player_name}")
+        raise PlayerNotFoundError(player_name)
 
     state = room.get_room_state()
     return {

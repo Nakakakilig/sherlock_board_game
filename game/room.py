@@ -1,6 +1,14 @@
 import os
 import random
 
+from exceptions import (
+    DeckAlreadyExistError,
+    NoMoreCardsInDeckError,
+    NoMoreCardsInPlayerError,
+    NoSuchCardInPlayerError,
+    PlayerAlreadyExistError,
+    PlayerNotFoundError,
+)
 from game.models import Card, Player, PlayerName, RoomStates
 
 
@@ -23,9 +31,7 @@ class Room:
         if not self._deck:
             raise Exception(f"No more cards in deck for {player_name}")
         if self._find_player_by_name(player_name):
-            raise Exception(
-                f"User with this name {player_name} already exist. Try SlavaPidor."
-            )
+            raise PlayerAlreadyExistError(player_name)
         two_cards = random.sample(self._deck, k=2)
         player = Player(name=player_name, cards=two_cards)
         self._players[player.name] = player
@@ -39,15 +45,17 @@ class Room:
             for card in players_cards:
                 self._deck.append(card)
             del self._players[player_name]
+            return
+        raise PlayerNotFoundError(player_name)
 
     def move_card_from_player_to_table(
         self, player_name: str, card_image_url: str
     ) -> None:
         if not self._find_player_by_name(player_name):
-            raise Exception(f"No such player: {player_name}")
+            raise PlayerNotFoundError(player_name)
         players_cards = self._players[player_name].cards
         if not players_cards:
-            raise Exception(f"No cards in players {player_name}")
+            raise NoMoreCardsInPlayerError(player_name)
 
         card = None
         for player_card in players_cards:
@@ -55,7 +63,7 @@ class Room:
                 card = player_card
 
         if not card:
-            raise Exception(f"No such card {card_image_url} in players {player_name}")
+            raise NoSuchCardInPlayerError(player_name, card_image_url)
 
         self._cards_on_table.append(card)
         self._players[player_name].cards.remove(card)
@@ -65,10 +73,10 @@ class Room:
         self, player_name: str, card_image_url: str
     ) -> None:
         if not self._find_player_by_name(player_name):
-            raise Exception(f"No such player: {player_name}")
+            raise PlayerNotFoundError(player_name)
         players_cards = self._players[player_name].cards
         if not players_cards:
-            raise Exception(f"No cards in players {player_name}")
+            raise NoMoreCardsInPlayerError(player_name)
 
         card = None
         for player_card in players_cards:
@@ -76,7 +84,7 @@ class Room:
                 card = player_card
 
         if not card:
-            raise Exception(f"No such card {card_image_url} in players {player_name}")
+            raise NoSuchCardInPlayerError(player_name, card_image_url)
 
         self._cards_in_trash.append(card)
         self._players[player_name].cards.remove(card)
@@ -84,9 +92,9 @@ class Room:
 
     def player_get_one_random_card_from_deck(self, player_name: str) -> None:
         if not self._deck:
-            raise Exception("No more cards in deck")
+            raise NoMoreCardsInDeckError()
         if not self._find_player_by_name(player_name):
-            raise Exception(f"No such player: {player_name}")
+            raise PlayerNotFoundError(player_name)
 
         card = random.choice(self._deck)
         self._players[player_name].cards.append(card)
@@ -95,7 +103,7 @@ class Room:
 
     def fill_deck(self, game: str):
         if self._deck:
-            raise Exception(f"Cant fill deck. Deck already exist: {self._deck}")
+            raise DeckAlreadyExistError(self._deck)
 
         path = "assets/" + game + "/"
         cards_urls = os.listdir(path)
@@ -106,6 +114,13 @@ class Room:
 
     def clean_deck(self):
         self._deck = []
+        return
+
+    def clean_room(self):
+        self._players: dict[PlayerName, Player] = {}
+        self._cards_on_table: list[Card] = []
+        self._cards_in_trash: list[Card] = []
+        self._deck: list[Card] = []
         return
 
     def _find_player_by_name(self, player_name: str) -> bool:

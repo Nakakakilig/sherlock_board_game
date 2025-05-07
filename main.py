@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 
 from config.settings import settings
+from exceptions_handler import add_exception_handler
 from game.room import Room
 from routes.main import router
 
@@ -25,8 +26,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/assets", StaticFiles(directory="assets"), name="assets")
-
-templates = Jinja2Templates(directory="static")
+app = add_exception_handler(app)
 
 
 # @app.get("/", response_class=RedirectResponse)
