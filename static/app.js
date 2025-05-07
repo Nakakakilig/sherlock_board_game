@@ -1,4 +1,5 @@
-//const currentPlayer = "{{ current_player_name }}";
+let enlargedCards = new Set(); // Зберігаємо ID збільшених карток
+let currentlyEnlargedCard = null; // Зберігаємо посилання на поточну збільшену картку
 
 async function fetchRoomStatus() {
     try {
@@ -6,7 +7,7 @@ async function fetchRoomStatus() {
         const data = await response.json();
 
         updateDeckAndTrash(data.deck, data.trash);
-        updateCardsOnTable(data.cards_on_table);
+        updateCardsOnTable(data.cards_on_table); // Оновлюємо картки
         updatePlayers(data.players);
     } catch (err) {
         console.error("Помилка при отриманні статусу кімнати:", err);
@@ -26,7 +27,43 @@ function updateCardsOnTable(cards) {
         const img = document.createElement("img");
         img.src = `/${card}`;
         img.alt = "card";
+        img.classList.add("card");
+        img.dataset.cardId = card; // Зберігаємо ID картки (шлях до зображення)
+
+        // Перевіряємо, чи була картка збільшена раніше
+        if (enlargedCards.has(card)) {
+            img.classList.add("enlarged");
+            currentlyEnlargedCard = img;  // Оновлюємо поточну збільшену картку при оновленні
+        }
+
         container.appendChild(img);
+    });
+
+    // **ДОДАЄМО ОБРОБНИКИ КЛІКІВ ТУТ!**
+    const cardElements = document.querySelectorAll('.card');
+    cardElements.forEach(card => {
+        card.addEventListener('click', () => {
+            const cardId = card.dataset.cardId;
+
+            // Якщо є інша збільшена картка, зменшуємо її
+            if (currentlyEnlargedCard && currentlyEnlargedCard !== card) {
+                currentlyEnlargedCard.classList.remove('enlarged');
+                enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
+            }
+
+            // Збільшуємо або зменшуємо поточну картку
+            if (card.classList.contains('enlarged')) {
+                card.classList.remove('enlarged');
+                enlargedCards.delete(cardId);
+                currentlyEnlargedCard = null; // Скидаємо поточну збільшену картку
+            } else {
+                card.classList.add('enlarged');
+                enlargedCards.add(cardId);
+                currentlyEnlargedCard = card; // Оновлюємо поточну збільшену картку
+            }
+
+            console.log("🖱️ Клік по картці");
+        });
     });
 }
 

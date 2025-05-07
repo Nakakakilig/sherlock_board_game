@@ -14,12 +14,11 @@
         <div id="trash-count">Trash: {{ trash }}</div>
     </div>
 
-
     <div class="game-board">
         <!-- Картки на столі -->
         <div class="cards-on-table" id="cards-on-table">
             {% for card in cards_on_table %}
-                <img src="/{{ card }}" alt="card" >
+                <img src="/{{ card }}" class="card" alt="card" >
             {% endfor %}
         </div>
 
@@ -31,7 +30,7 @@
                     <div>
                         {% for card in player.cards %}
                             {% if player.name == current_player_name %}
-                                <img src="/{{card.image_url}}" alt="card">
+                                <img src="/{{card.image_url}}" alt="card" class="player-card">
                             {% else %}
                                 <img src="/assets/card_template.png" alt="card">
                             {% endif %}
@@ -42,9 +41,27 @@
         </div>
     </div>
 
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("📦 Сторінка завантажена. Шукаю картки...");
+    
+            const cards = document.querySelectorAll('.card');
+            console.log("🔎 Знайдено карток:", cards.length);
+    
+            cards.forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('enlarged');
+                    console.log("🖱️ Клік по картці");
+                });
+            });
+        });
+    </script> -->
+
     <script>
         const currentPlayer = "{{ current_player_name }}";
     </script>
+
     <script src="/static/app.js"></script>
+
 </body>
 </html>

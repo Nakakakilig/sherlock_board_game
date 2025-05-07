@@ -30,15 +30,20 @@ body {
     align-items: center;
 }
 
-.cards-on-table img {
+.card {
     width: 50px;
     height: 75px;
     margin: 5px;
     cursor: pointer;
     transition: transform 0.3s ease;
-    z-index: 10;
+    z-index: 5;
 }
 
+.card.enlarged {
+    transform: scale(2.5);
+    z-index: 10;
+    position: relative;
+}
 
 .players-container {
     position: absolute;
