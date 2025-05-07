@@ -62,12 +62,29 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.player div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; 
     align-items: center;
+}
+
+.player-card {
+    transition: transform 0.3s ease;
+}
+
+.player-card.enlarged {
+    transform: scale(2.5);
+    z-index: 10;
+    position: relative;
 }
 
 .player img {
     width: 50px;
     height: 75px;
+    margin: 0 5px;
 }
 
 /* Розташовуємо гравців по колу навколо карт */

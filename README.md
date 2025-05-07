@@ -2,15 +2,17 @@
 
 ## TODO:
 
-- [ ] add on click card enlargement 
-    - [x] cards on table
-    - [ ] card in hand
-- [ ] create drag-and-drop for cards on table
+- [x] Add on-click card enlargement.
+    - [x] Cards on the table.
+    - [x] Cards in hand.
+- [ ] Create buttons for dropping a card into the table and the trash.
+- [ ] Create drag-and-drop to move a card to the table.
+
 - [ ] (optional) create drag-and-drop for cards in hands
 - [ ] move players to table edges, not in center circle
 - [ ] (optional) add any  security
 
-## Contributing
+## Contribution
 
 Create virtual environment:
 
