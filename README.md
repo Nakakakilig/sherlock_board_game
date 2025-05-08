@@ -11,6 +11,9 @@
     - [x] Move card to trash.
 - [ ] Add button to get a card from deck.
 - [ ] Implement drag-and-drop to move a card on the table.
+- [ ] Fix card collision (table card overlap hand enlarged card )
+- [ ] Add structure for cards on table (something like matrix 5x6) (frontend)
+- [ ] Add structure for cards on table (something like matrix 5x6) (backend)
 
 - [ ] move players to table edges, not in center circle
 - [ ] (optional) add any  security
