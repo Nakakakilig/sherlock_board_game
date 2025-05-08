@@ -110,9 +110,14 @@ class Room:
     def fill_deck(self, game: str):
         if self._deck:
             raise DeckAlreadyExistError(self._deck)
+        self.clean_room()
 
         path = "assets/" + game + "/"
+        # need first card to be on table (game rules)
+        self._cards_on_table.append(Card(image_url=path + "1.png"))
         cards_urls = os.listdir(path)
+        # skip first card, it's on table already
+        cards_urls = [url for url in cards_urls if url != "1.png"]
         cards = [Card(image_url=path + image) for image in cards_urls]
         random.shuffle(cards)
         self._deck = cards
@@ -123,7 +128,8 @@ class Room:
         return
 
     def clean_room(self):
-        self._players: dict[PlayerName, Player] = {}
+        for player in self._players.values():
+            player.cards = []
         self._cards_on_table: list[Card] = []
         self._cards_in_trash: list[Card] = []
         self._deck: list[Card] = []
