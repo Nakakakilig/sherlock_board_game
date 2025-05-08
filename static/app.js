@@ -91,9 +91,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         currentlyEnlargedCard.remove();
                         enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
                         currentlyEnlargedCard = null
-
-                        cardToTableButton.classList.add('hidden'); // Ховаємо кнопку
-                        cardToTrashButton.classList.add('hidden'); // Ховаємо кнопку
+                        // Ховаємо обидві кнопки
+                        cardToTableButton.classList.add('hidden');
+                        cardToTrashButton.classList.add('hidden');
                     } else {
                         console.error('Помилка скидання картки:', response.status);
                     }
@@ -113,14 +113,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => {
                     if (response.ok) {
                         // Створюємо елемент img для нової картки на столі
-                        console.log('Успішно скинули карту в отбой:', playerName, response.status);
+                        console.log('Успішно скинули карту в мусор:', playerName, response.status);
                         //Видаляємо стару картку
                         currentlyEnlargedCard.remove();
                         enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
                         currentlyEnlargedCard = null
-    
-                        cardToTableButton.classList.add('hidden'); // Ховаємо кнопку
-                        cardToTrashButton.classList.add('hidden'); // Ховаємо кнопку
+                        // Ховаємо обидві кнопки
+                        cardToTableButton.classList.add('hidden');
+                        cardToTrashButton.classList.add('hidden');
                     } else {
                         console.error('Помилка скидання картки в отбой:', response.status);
                     }
@@ -175,7 +175,7 @@ function updatePlayers(players) {
                 img.src = `/${card.image_url}`;
                 img.dataset.cardId = card.image_url; // Зберігаємо ID картки (шлях до зображення)
             } else {
-                img.src = "/assets/card_template.png";  // Зображення шаблону для інших гравців
+                img.src = "/assets/card_template_2.png";  // Зображення шаблону для інших гравців
                 img.dataset.cardId = "hidden"; // Щоб не обробляти кліки по чужим картам
             }
 
@@ -250,11 +250,23 @@ function updatePlayers(players) {
 function generatePlayerStyles(count) {
     const styleTag = document.getElementById("dynamic-player-styles") || document.createElement("style");
     styleTag.id = "dynamic-player-styles";
+
+    const radius = 350; // регулює відстань від центру
     let styles = "";
+
     for (let i = 0; i < count; i++) {
         const angle = (360 / count) * i;
-        styles += `.player-${i} { transform: rotate(${angle}deg) translate(220px) rotate(-${angle}deg); }\n`;
+        styles += `
+            .player-${i} {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: rotate(${angle}deg) translate(${radius}px) rotate(-${angle}deg) translate(-50%, -50%);
+                transform-origin: center;
+            }
+        `;
     }
+
     styleTag.textContent = styles;
     document.head.appendChild(styleTag);
 }

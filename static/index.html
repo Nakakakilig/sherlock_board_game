@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{current_player_name}} game status</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
+
 <body>
-
-    <!-- Deck і Trash розташовуються над колом -->
-    <div class="deck-trash">
-        <div id="deck-count">Deck: {{ deck }}</div>
-        <div id="trash-count">Trash: {{ trash }}</div>
-    </div>
-
     <div class="game-board">
+
         <!-- Картки на столі -->
         <div class="cards-on-table" id="cards-on-table">
             {% for card in cards_on_table %}
-                <img src="/{{ card }}" class="card" alt="card" >
+            <img src="/{{ card }}" class="card" alt="card">
             {% endfor %}
         </div>
 
         <!-- Гравці розташовуються поза колом -->
         <div class="players-container" id="players-container">
             {% for player in players %}
-                <div class="player player-{{ loop.index0 }}">
-                    <span>{{ player.name }}</span>
-                    <div>
-                        {% for card in player.cards %}
-                            {% if player.name == current_player_name %}
-                                <img src="/{{card.image_url}}" alt="card" class="player-card">
-                            {% else %}
-                                <img src="/assets/card_template.png" alt="card">
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+            <div class="player player-{{ loop.index0 }}">
+                <span>{{ player.name }}</span>
+                <div>
+                    {% for card in player.cards %}
+                    {% if player.name == current_player_name %}
+                    <img src="/{{card.image_url}}" alt="card" class="player-card">
+                    {% else %}
+                    <img src="/assets/card_template_2.png" alt="card">
+                    {% endif %}
+                    {% endfor %}
                 </div>
+            </div>
             {% endfor %}
         </div>
-        <button id="card-to-table-button" class="hidden">Скинути на стіл</button>  <!-- Додана кнопка -->
-        <button id="card-to-trash-button" class="hidden">Скинути в отбой</button>  <!-- Додана кнопка -->
-        <img id="card-from-deck-button" src="/assets/card_template.png"  data-player-name="{{ current_player_name }}" />
+        <button id="card-to-table-button" class="hidden">Drop card on table.</button>
+        <button id="card-to-trash-button" class="hidden">Discard the card.</button>
     </div>
 
-    <script>
-        const currentPlayer = "{{ current_player_name }}";
-    </script>
+    <div id="deck-information">
+        <img id="card-from-deck-button" src="/assets/card_template_2.png" data-player-name="{{ current_player_name }}" />
+        <div id="deck-count">Deck: {{ deck }}</div>
+    </div>
 
+    <div id="trash-information">
+        <div id="trash-count">Trash: {{ trash }}</div>
+    </div>
+
+    <script> const currentPlayer = "{{ current_player_name }}"; </script>
     <script src="/static/app.js"></script>
-    
+
 </body>
 </html>
