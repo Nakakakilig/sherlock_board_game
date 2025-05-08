@@ -68,6 +68,7 @@ function updateCardsOnTable(cards) {
 
 document.addEventListener('DOMContentLoaded', function () {
     const discardButton = document.getElementById('discard-button');
+    const discardButtonTrash = document.getElementById('discard-button-trash');
     const cardsOnTable = document.getElementById("cards-on-table"); //Отримайте id cardsOnTable тут
 
     discardButton.addEventListener('click', function () {
@@ -100,6 +101,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    discardButtonTrash.addEventListener('click', function () {
+        if (currentlyEnlargedCard) {
+            const playerName = discardButton.dataset.playerName;
+    
+            fetch(`/api/room/player-card-to-trash/${playerName}?card_image_url=${encodeURIComponent(cardImageUrl)}`, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Створюємо елемент img для нової картки на столі
+                        console.log('Успішно скинули карту в отбой:', playerName, response.status);
+                        //Видаляємо стару картку
+                        currentlyEnlargedCard.remove();
+                        enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
+                        currentlyEnlargedCard = null
+    
+                        discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
+                    } else {
+                        console.error('Помилка скидання картки в отбой:', response.status);
+                    }
+                    // Оновлюємо інтерфейс після скидання картки.
+                    fetchRoomStatus()
+                });
+        }
+    });
 });
 
 function updatePlayers(players) {
@@ -148,6 +174,7 @@ function updatePlayers(players) {
     generatePlayerStyles(players.length);
 
     const discardButton = document.getElementById('discard-button');
+    const discardButtonTrash = document.getElementById('discard-button-trash');
 
     // Додаємо обробники кліків для карток гравців
     const playerCards = Array.from(document.querySelectorAll('.player div img.player-card'))
@@ -179,11 +206,13 @@ function updatePlayers(players) {
                 enlargedCards.delete(cardId);
                 this.style.zIndex = 1;
                 discardButton.classList.add('hidden'); // Ховаємо кнопку
+                discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
                 currentlyEnlargedCard = null;
             } else {
                 this.classList.add('enlarged');
                 enlargedCards.add(cardId);
                 discardButton.classList.remove('hidden'); // Показуємо кнопку
+                discardButtonTrash.classList.remove('hidden'); // Показуємо кнопку
                 this.style.zIndex = 10; // Встановлюємо z-index для поточної картки
                 currentlyEnlargedCard = this;
 
