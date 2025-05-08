@@ -9,13 +9,13 @@
 - [x] Add buttons for dropping a card into the table and the trash.
     - [x] Move card to the table.
     - [x] Move card to trash.
-- [ ] Add button to get a card from deck.
-- [ ] Implement drag-and-drop to move a card on the table.
+- [x] Add button to get a card from deck.
 - [ ] Fix card collision (table card overlap hand enlarged card )
-- [ ] Add structure for cards on table (something like matrix 5x6) (frontend)
-- [ ] Add structure for cards on table (something like matrix 5x6) (backend)
+- [ ] Implement drag-and-drop to move a card on the table.
+    - [ ] Add structure for cards on table (something like matrix 5x6) (frontend)
+    - [ ] Add structure for cards on table (something like matrix 5x6) (backend)
 
-- [ ] move players to table edges, not in center circle
+- [ ] Design: move players to table edges, not in center circle
 - [ ] (optional) add any  security
 
 ## Contribution
