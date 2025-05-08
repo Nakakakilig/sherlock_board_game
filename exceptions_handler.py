@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from exceptions import (
     DeckAlreadyExistError,
+    MaxNumberOfCardsInHandError,
     NoMoreCardsInDeckError,
     NoMoreCardsInPlayerError,
     NoSuchCardInPlayerError,
@@ -51,6 +52,13 @@ def add_exception_handler(app: FastAPI) -> FastAPI:
     async def _(request: Request, exc: PlayerNotFoundError):
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
+            content={"detail": str(exc)},
+        )
+
+    @app.exception_handler(MaxNumberOfCardsInHandError)
+    async def _(request: Request, exc: MaxNumberOfCardsInHandError):
+        return JSONResponse(
+            status_code=status.HTTP_409_CONFLICT,
             content={"detail": str(exc)},
         )
 

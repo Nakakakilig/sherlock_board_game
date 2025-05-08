@@ -29,3 +29,10 @@ class NoSuchCardInPlayerError(Exception):
 class DeckAlreadyExistError(Exception):
     def __init__(self, deck: list[Card]):
         super().__init__(f"Cant fill deck. Deck already exist: {deck}")
+
+
+class MaxNumberOfCardsInHandError(Exception):
+    def __init__(self, player_name: str, cards_num: int):
+        super().__init__(
+            f"Player {player_name} reached max number of cards: {cards_num}"
+        )

@@ -3,6 +3,7 @@ import random
 
 from exceptions import (
     DeckAlreadyExistError,
+    MaxNumberOfCardsInHandError,
     NoMoreCardsInDeckError,
     NoMoreCardsInPlayerError,
     NoSuchCardInPlayerError,
@@ -10,6 +11,8 @@ from exceptions import (
     PlayerNotFoundError,
 )
 from game.models import Card, Player, PlayerName, RoomStates
+
+MAX_CARDS_IN_PLAYER_HAND = 2
 
 
 class Room:
@@ -96,6 +99,9 @@ class Room:
         if not self._find_player_by_name(player_name):
             raise PlayerNotFoundError(player_name)
 
+        num_cards_in_hand = len(self._players[player_name].cards)
+        if num_cards_in_hand >= MAX_CARDS_IN_PLAYER_HAND:
+            raise MaxNumberOfCardsInHandError(player_name, num_cards_in_hand)
         card = random.choice(self._deck)
         self._players[player_name].cards.append(card)
         self._deck.remove(card)
