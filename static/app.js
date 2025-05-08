@@ -92,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         currentlyEnlargedCard = null
 
                         discardButton.classList.add('hidden'); // Ховаємо кнопку
+                        discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
                     } else {
                         console.error('Помилка скидання картки:', response.status);
                     }
@@ -117,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
                         currentlyEnlargedCard = null
     
+                        discardButton.classList.add('hidden'); // Ховаємо кнопку
                         discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
                     } else {
                         console.error('Помилка скидання картки в отбой:', response.status);
