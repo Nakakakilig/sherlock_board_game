@@ -111,7 +111,7 @@ def room_status_old(room: Annotated[Room, Depends()]) -> RoomStates:
 #             "trash": len(state.trash),
 #             "cards_on_table": [card.image_url for card in state.cards_on_table],
 #             "players": list(state.players.values()),
-#             # **state.model_dump(),
+#             **state.model_dump(),
 #         },
 #     )
 

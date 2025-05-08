@@ -61,10 +61,46 @@ function updateCardsOnTable(cards) {
                 currentlyEnlargedCard = card; // Оновлюємо поточну збільшену картку
             }
 
-            console.log("🖱️ Клік по картці на столі");
+            console.log("🖱️ Клік по картці на столі", cardId);
         });
     });
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const discardButton = document.getElementById('discard-button');
+    const cardsOnTable = document.getElementById("cards-on-table"); //Отримайте id cardsOnTable тут
+
+    discardButton.addEventListener('click', function () {
+        if (currentlyEnlargedCard) {
+            const playerName = discardButton.dataset.playerName;
+
+            fetch(`/api/room/player-card-to-table/${playerName}?card_image_url=${encodeURIComponent(cardImageUrl)}`, {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Створюємо елемент img для нової картки на столі
+                        const newCardImage = document.createElement('img');
+                        newCardImage.src = cardImageUrl;
+                        newCardImage.classList.add('card');
+                        newCardImage.dataset.cardId = cardImageUrl;  // Важливо!
+                        cardsOnTable.appendChild(newCardImage);
+                        //Видаляємо стару картку
+                        currentlyEnlargedCard.remove();
+                        enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
+                        currentlyEnlargedCard = null
+
+                        discardButton.classList.add('hidden'); // Ховаємо кнопку
+                    } else {
+                        console.error('Помилка скидання картки:', response.status);
+                    }
+                    // Оновлюємо інтерфейс після скидання картки.
+                    fetchRoomStatus()
+                });
+        }
+    });
+
+});
 
 function updatePlayers(players) {
     const container = document.getElementById("players-container");
@@ -111,15 +147,17 @@ function updatePlayers(players) {
     // Генерація CSS для позицій гравців по колу
     generatePlayerStyles(players.length);
 
+    const discardButton = document.getElementById('discard-button');
+
     // Додаємо обробники кліків для карток гравців
-    console.log("Додаю обробники кліків для карток гравців");
     const playerCards = Array.from(document.querySelectorAll('.player div img.player-card'))
         .filter(card => card.dataset.cardId !== 'hidden'); // <---- Фільтруємо картки
 
-    console.log("Знайдено карток гравців:", playerCards.length);
     playerCards.forEach(card => {
-        card.addEventListener('click', function() {
+        card.addEventListener('click', function () {
             const cardId = this.dataset.cardId;
+            const playerDiv = this.closest('.player');
+            const playerName = playerDiv.querySelector('span').textContent;
 
             if (cardId === "hidden") {
                 return;
@@ -135,17 +173,26 @@ function updatePlayers(players) {
                     enlargedCards.delete(playerCard.dataset.cardId);
                 }
             });
-            
+
             if (this.classList.contains('enlarged')) {
                 this.classList.remove('enlarged');
                 enlargedCards.delete(cardId);
                 this.style.zIndex = 1;
+                discardButton.classList.add('hidden'); // Ховаємо кнопку
+                currentlyEnlargedCard = null;
             } else {
                 this.classList.add('enlarged');
                 enlargedCards.add(cardId);
+                discardButton.classList.remove('hidden'); // Показуємо кнопку
                 this.style.zIndex = 10; // Встановлюємо z-index для поточної картки
+                currentlyEnlargedCard = this;
+
+                // Зберігаємо ім'я гравця та URL картки в data-атрибути кнопки
+                discardButton.dataset.playerName = playerName;
+                discardButton.dataset.cardImageUrl = this.dataset.cardId; // Використовуємо card.dataset.cardId
+                cardImageUrl = this.dataset.cardId; // Задаємо значення cardImageUrl
             }
-            console.log("🖱️ Клік по картці гравця");
+            console.log("🖱️ Клік по картці гравця", cardId);
         });
     });
 }

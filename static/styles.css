@@ -87,9 +87,20 @@ body {
     margin: 0 5px;
 }
 
-/* Розташовуємо гравців по колу навколо карт */
-{% for i in range(players|length) %}
-.player-{{ i }} {
-    transform: rotate({{ (360 / players|length) * i }}deg) translate(220px) rotate(-{{ (360 / players|length) * i }}deg);
+.hidden {
+    display: none;
 }
-{% endfor %}
+
+#discard-button {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
