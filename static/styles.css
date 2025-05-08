@@ -91,7 +91,7 @@ body {
     display: none;
 }
 
-#discard-button {
+#card-to-table-button {
     position: fixed;
     bottom: 20px;
     left: 50%; 
@@ -105,7 +105,7 @@ body {
     cursor: pointer;
 }
 
-#discard-button-trash {
+#card-to-trash-button {
     position: fixed;
     bottom: 20px;
     left: 60%;

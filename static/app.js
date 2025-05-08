@@ -67,13 +67,13 @@ function updateCardsOnTable(cards) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const discardButton = document.getElementById('discard-button');
-    const discardButtonTrash = document.getElementById('discard-button-trash');
+    const cardToTableButton = document.getElementById('card-to-table-button');
+    const cardToTrashButton = document.getElementById('card-to-trash-button');
     const cardsOnTable = document.getElementById("cards-on-table"); //Отримайте id cardsOnTable тут
 
-    discardButton.addEventListener('click', function () {
+    cardToTableButton.addEventListener('click', function () {
         if (currentlyEnlargedCard) {
-            const playerName = discardButton.dataset.playerName;
+            const playerName = cardToTableButton.dataset.playerName;
 
             fetch(`/api/room/player-card-to-table/${playerName}?card_image_url=${encodeURIComponent(cardImageUrl)}`, {
                 method: 'POST',
@@ -91,8 +91,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
                         currentlyEnlargedCard = null
 
-                        discardButton.classList.add('hidden'); // Ховаємо кнопку
-                        discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
+                        cardToTableButton.classList.add('hidden'); // Ховаємо кнопку
+                        cardToTrashButton.classList.add('hidden'); // Ховаємо кнопку
                     } else {
                         console.error('Помилка скидання картки:', response.status);
                     }
@@ -102,9 +102,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    discardButtonTrash.addEventListener('click', function () {
+    cardToTrashButton.addEventListener('click', function () {
         if (currentlyEnlargedCard) {
-            const playerName = discardButton.dataset.playerName;
+            const playerName = cardToTableButton.dataset.playerName;
     
             fetch(`/api/room/player-card-to-trash/${playerName}?card_image_url=${encodeURIComponent(cardImageUrl)}`, {
                 method: 'POST',
@@ -118,8 +118,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         enlargedCards.delete(currentlyEnlargedCard.dataset.cardId);
                         currentlyEnlargedCard = null
     
-                        discardButton.classList.add('hidden'); // Ховаємо кнопку
-                        discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
+                        cardToTableButton.classList.add('hidden'); // Ховаємо кнопку
+                        cardToTrashButton.classList.add('hidden'); // Ховаємо кнопку
                     } else {
                         console.error('Помилка скидання картки в отбой:', response.status);
                     }
@@ -175,8 +175,8 @@ function updatePlayers(players) {
     // Генерація CSS для позицій гравців по колу
     generatePlayerStyles(players.length);
 
-    const discardButton = document.getElementById('discard-button');
-    const discardButtonTrash = document.getElementById('discard-button-trash');
+    const discardButton = document.getElementById('card-to-table-button');
+    const discardButtonTrash = document.getElementById('card-to-trash-button');
 
     // Додаємо обробники кліків для карток гравців
     const playerCards = Array.from(document.querySelectorAll('.player div img.player-card'))
