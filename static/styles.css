@@ -118,3 +118,11 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
+#card-from-deck-button { 
+    position: fixed; 
+    top: 20px; 
+    left: 30%; 
+    cursor: pointer;  
+    z-index: 10;  
+} 

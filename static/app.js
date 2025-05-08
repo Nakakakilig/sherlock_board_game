@@ -69,6 +69,7 @@ function updateCardsOnTable(cards) {
 document.addEventListener('DOMContentLoaded', function () {
     const cardToTableButton = document.getElementById('card-to-table-button');
     const cardToTrashButton = document.getElementById('card-to-trash-button');
+    const cardFromDeckButton = document.getElementById('card-from-deck-button');
     const cardsOnTable = document.getElementById("cards-on-table"); //Отримайте id cardsOnTable тут
 
     cardToTableButton.addEventListener('click', function () {
@@ -127,6 +128,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     fetchRoomStatus()
                 });
         }
+    });
+
+    cardFromDeckButton.addEventListener('click', function () {
+
+        const playerName = cardFromDeckButton.dataset.playerName;
+        fetch(`/api/room/card-from-deck-to-player/${playerName}`, {
+            method: 'POST',
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Успішно взяли карту з колоди:', playerName, response.status);
+                } else {
+                    console.error('Помилка при спробі взяти карту з колоди:', response.status, response.statusText);
+                }
+                // Оновлюємо інтерфейс після скидання картки.
+                fetchRoomStatus()
+            });
+
     });
 });
 
