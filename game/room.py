@@ -115,13 +115,27 @@ class Room:
         path = "assets/" + game + "/"
         # need first card to be on table (game rules)
         self._cards_on_table.append(Card(image_url=path + "1.png"))
-        cards_urls = os.listdir(path)
-        # skip first card, it's on table already
-        cards_urls = [url for url in cards_urls if url != "1.png"]
+        cards_urls_unfiltered = os.listdir(path)
+        if not cards_urls_unfiltered:
+            raise NoMoreCardsInDeckError()
+        cards_urls = self._filter_cards_urls(cards_urls_unfiltered)
         cards = [Card(image_url=path + image) for image in cards_urls]
         random.shuffle(cards)
         self._deck = cards
         return
+
+    @staticmethod
+    def _filter_cards_urls(cards_urls_unfiltered: list[str]):
+        cards_urls: list[str] = []
+        for url in cards_urls_unfiltered:
+            # skip first card, it's on table already
+            if url == "1.png":
+                continue
+            # skip not playable cards
+            if "lor" in url:
+                continue
+            cards_urls.append(url)
+        return cards_urls
 
     def clean_deck(self):
         self._deck = []
