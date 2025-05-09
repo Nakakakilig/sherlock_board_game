@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cardToTableButton = document.getElementById('card-to-table-button');
     const cardToTrashButton = document.getElementById('card-to-trash-button');
     const cardFromDeckButton = document.getElementById('card-from-deck-button');
-    const cardsOnTable = document.getElementById("cards-on-table"); //Отримайте id cardsOnTable тут
+    const cardsOnTable = document.getElementById("cards-on-table");
 
     cardToTableButton.addEventListener('click', function () {
         if (currentlyEnlargedCard) {
@@ -182,7 +182,7 @@ function updatePlayers(players) {
             // Перевіряємо, чи була картка збільшена раніше. Важливо використовувати dataset.cardId
             if (enlargedCards.has(img.dataset.cardId)) {
                 img.classList.add("enlarged");
-                img.style.zIndex = "10"; // Встановлюємо z-index для збільшеної картки
+                img.style.zIndex = "1000"; // Встановлюємо z-index для збільшеної картки
             }
 
             cardsDiv.appendChild(img);
@@ -224,17 +224,17 @@ function updatePlayers(players) {
 
             if (this.classList.contains('enlarged')) {
                 this.classList.remove('enlarged');
+                this.style.zIndex = 1; // <-- додано
                 enlargedCards.delete(cardId);
-                this.style.zIndex = 1;
                 discardButton.classList.add('hidden'); // Ховаємо кнопку
                 discardButtonTrash.classList.add('hidden'); // Ховаємо кнопку
                 currentlyEnlargedCard = null;
             } else {
                 this.classList.add('enlarged');
+                this.style.zIndex = 1000; // <-- додано
                 enlargedCards.add(cardId);
                 discardButton.classList.remove('hidden'); // Показуємо кнопку
                 discardButtonTrash.classList.remove('hidden'); // Показуємо кнопку
-                this.style.zIndex = 10; // Встановлюємо z-index для поточної картки
                 currentlyEnlargedCard = this;
 
                 // Зберігаємо ім'я гравця та URL картки в data-атрибути кнопки
@@ -247,11 +247,13 @@ function updatePlayers(players) {
     });
 }
 
+// --- Розміщення гравців по колу навколо столу ---
+
 function generatePlayerStyles(count) {
     const styleTag = document.getElementById("dynamic-player-styles") || document.createElement("style");
     styleTag.id = "dynamic-player-styles";
 
-    const radius = 350; // регулює відстань від центру
+    const radius = 350; // регулює відстань від центру столу
     let styles = "";
 
     for (let i = 0; i < count; i++) {

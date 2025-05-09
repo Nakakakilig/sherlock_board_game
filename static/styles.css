@@ -49,12 +49,14 @@ body {
     transform: translate(-50%, -50%);
 }
 
-
 .cards-on-table {
     position: absolute;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    align-content: center;
+    width: 80%;
 }
 
 .card {
@@ -67,8 +69,8 @@ body {
 }
 
 .card.enlarged {
-    transform: scale(7);
-    z-index: 100;
+    transform: scale(6);
+    z-index: 1000;
     position: relative;
 }
 
@@ -108,8 +110,8 @@ body {
 }
 
 .player-card.enlarged {
-    transform: scale(7);
-    z-index: 100;
+    transform: scale(6);
+    z-index: 1000;
     position: relative;
 }
 
